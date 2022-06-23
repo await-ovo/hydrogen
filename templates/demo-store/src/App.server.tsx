@@ -9,7 +9,6 @@ import {
   Router,
   ShopifyAnalytics,
   ShopifyProvider,
-  LocalizationProvider,
   CartProvider,
 } from '@shopify/hydrogen';
 
@@ -26,24 +25,22 @@ function App({routes, request}: HydrogenRouteProps) {
 
   return (
     <Suspense fallback={<HeaderFallback isHome={isHome} />}>
-      <ShopifyProvider>
-        <LocalizationProvider countryCode={countryCode}>
-          <CartProvider countryCode={countryCode as CountryCode}>
-            <Suspense>
-              <DefaultSeo />
-            </Suspense>
-            <Router>
-              <FileRoutes
-                basePath={countryCode ? `/${countryCode}/` : undefined}
-                routes={routes}
-              />
-              <Route path="*" page={<NotFound />} />
-            </Router>
-          </CartProvider>
-          <PerformanceMetrics />
-          {import.meta.env.DEV && <PerformanceMetricsDebug />}
-          <ShopifyAnalytics />
-        </LocalizationProvider>
+      <ShopifyProvider countryCode={countryCode as CountryCode}>
+        <CartProvider countryCode={countryCode as CountryCode}>
+          <Suspense>
+            <DefaultSeo />
+          </Suspense>
+          <Router>
+            <FileRoutes
+              basePath={countryCode ? `/${countryCode}/` : undefined}
+              routes={routes}
+            />
+            <Route path="*" page={<NotFound />} />
+          </Router>
+        </CartProvider>
+        <PerformanceMetrics />
+        {import.meta.env.DEV && <PerformanceMetricsDebug />}
+        <ShopifyAnalytics />
       </ShopifyProvider>
     </Suspense>
   );
